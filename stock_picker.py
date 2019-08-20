@@ -101,19 +101,19 @@ class StockPicker:
     def get_highest_profits_data(self, stock_data=[]):
         print('Calculating Highest Profits....')
         stock_prices = [x['StockPrice'] for x in stock_data]
-        _profit = _prev_profit = profit = mean_ = stdev_ = 0
+        _prev_min = profit = mean_ = stdev_ = _buy_idx = _sell_idx = min_idx = 0
         buy_date, sell_date = '', ''
-        for idx, x in enumerate(stock_prices[:-1]):
-            #  diff_prices = stock_prices[idx:idx+1]+[t-s for s, t in zip(stock_prices, stock_prices[idx+1:])]
-            diff_prices = [x-stock_prices[idx] for x in stock_prices[idx+1:]]  # Price Growth list.
-            cummulatives = list(accumulate(diff_prices[:]))  # Cummulative Sum of all profits.
-            _profit = max(cummulatives)
-            _sell_idx = idx + cummulatives.index(_profit) + 1
-            if _profit > _prev_profit:
-                buy_date = stock_data[idx]['StockDate']
-                sell_date = stock_data[_sell_idx]['StockDate']
-                profit = _profit
-                _prev_profit = _profit
+        for idx, x in enumerate(stock_prices):
+            if x < _prev_min:
+                min_idx = idx
+                _prev_min = stock_prices[idx]
+            elif (x - _prev_min) > profit:
+                _buy_idx = min_idx
+                _sell_idx = idx
+                profit = x - _prev_min
+
+        buy_date = stock_data[_buy_idx]['StockDate']
+        sell_date = stock_data[_sell_idx]['StockDate']
 
         try:
             mean_ = mean(stock_prices)
