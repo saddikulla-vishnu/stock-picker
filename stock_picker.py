@@ -101,16 +101,15 @@ class StockPicker:
     def get_highest_profits_data(self, stock_data=[]):
         print('Calculating Highest Profits....')
         stock_prices = [x['StockPrice'] for x in stock_data]
-        _prev_min = profit = mean_ = stdev_ = _buy_idx = _sell_idx = min_idx = 0
+        profit = mean_ = stdev_ = _buy_idx = _sell_idx = min_idx = 0
         buy_date, sell_date = '', ''
         for idx, x in enumerate(stock_prices):
-            if x < _prev_min:
+            if x < stock_prices[min_idx]:
                 min_idx = idx
-                _prev_min = stock_prices[idx]
-            elif (x - _prev_min) > profit:
+            elif (x - stock_prices[min_idx]) > profit:
                 _buy_idx = min_idx
                 _sell_idx = idx
-                profit = x - _prev_min
+                profit = x - stock_prices[min_idx]
 
         buy_date = stock_data[_buy_idx]['StockDate']
         sell_date = stock_data[_sell_idx]['StockDate']
