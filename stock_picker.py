@@ -28,6 +28,7 @@ class StockPicker:
         return _value
 
     def set_data_from_csv(self, csv_path):
+        print('Reading Data from CSV...')
         stock_data = []
         with open(str(csv_path)) as f:
             try:
@@ -36,6 +37,7 @@ class StockPicker:
             except Exception as e:
                 print('Unsupported filetype.')
                 raise e
+        print('Reading Data Done...')
 
         stock_data = sorted(stock_data, key=lambda x: x['StockDate'])
 
@@ -67,12 +69,12 @@ class StockPicker:
             success = self.remaining_flow(stock_code)
             return success
         else:
-            close_match = get_close_matches(stock_code, available_stock_codes, n=5, cutoff=0.5)[:1]
-            if close_match:
-                for x in close_match:
+            close_matches = get_close_matches(stock_code, available_stock_codes, n=5, cutoff=0.5)
+            if close_matches:
+                for x in close_matches:
                     prompt = input('"Oops! Do you mean {}? [y] or n":-\t'.format(x)) or 'y'
                     if prompt == 'y':
-                        stock_code = close_match[0]
+                        stock_code = x
                         self.remaining_flow(stock_code)
                         break
             else:
@@ -92,6 +94,7 @@ class StockPicker:
         return sdate
 
     def get_highest_profits_data(self, stock_data=[]):
+        print('Calculating Highest Profits....')
         stock_prices = [x['StockPrice'] for x in stock_data]
         _profit = _prev_profit = profit = mean_ = stdev_ = 0
         buy_date, sell_date = '', ''
@@ -117,6 +120,7 @@ class StockPicker:
             'buy_date': buy_date, 'sell_date': sell_date, 'profit': profit, 'mean': mean_,
             'std': stdev_
         }
+        print('Calculating Highest Done....')
         return data
 
     def get_stats(self, stock_code, start_date, end_date):
