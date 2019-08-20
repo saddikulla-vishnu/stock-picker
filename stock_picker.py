@@ -1,16 +1,21 @@
 #!/usr/bin/env python3
 
+import sys
 import argparse
 import os
-from pathlib import Path
 import errno
 import csv
 from datetime import datetime
 from collections import defaultdict
 from difflib import get_close_matches
-from itertools import accumulate
-from statistics import mean, stdev
 from functools import partial
+
+if not sys.version_info >= (3, 4):
+    sys.exit('Sorry, Python < 3.4 is not supported')
+else:
+    from pathlib import Path
+    from itertools import accumulate
+    from statistics import mean, stdev
 
 
 class StockPicker:
@@ -145,7 +150,7 @@ class StockPicker:
         #  )
         print(
             '"Here is you result":-\tMean: {mean:,.3f}, Std: {std:,.3f},'
-            ' Buy date: {buy_date}, Sell date: {sell_date}, Profit: Rs.{profit:,.3f}'.format(**stats_data)
+            ' Buy date: {buy_date}, Sell date: {sell_date}, Profit: Rs. {profit:,.3f}'.format(**stats_data)
         )
         return True
 
